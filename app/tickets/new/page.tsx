@@ -1,8 +1,10 @@
-import dynamic from 'next/dynamic'
+// import dynamic from 'next/dynamic'
 
-const TicketForm = dynamic(() => import('@/components/TicketForm'), {
-    ssr: false,
-})
+import TicketForm from "@/components/TicketForm"
+
+// const TicketForm = dynamic(() => import('@/components/TicketForm'), {
+//     ssr: false,
+// })
 
 const NewTicket = () => {
   return (
