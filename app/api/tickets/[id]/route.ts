@@ -1,6 +1,8 @@
 import prisma from "@/prisma/db";
 import { ticketPatchSchema } from "@/ValidationSchemas/ticket";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import options from "../../auth/[...nextauth]/options";
 
 interface Props {
   params: {
@@ -9,6 +11,11 @@ interface Props {
 }
 
 export async function PATCH(request: NextRequest, { params }: Props) {
+  const session = await getServerSession(options);
+
+  if (!session) {
+    return NextResponse.json({ error: "Not Authenticated" }, { status: 401 });
+  }
   const body = await request.json();
   const validation = ticketPatchSchema.safeParse(body);
   if (!validation.success) {

@@ -14,12 +14,16 @@ import { buttonVariants } from "@/components/ui/button";
 import ReactMarkDown from "react-markdown";
 import DeleteButton from "./DeleteButton";
 import AssignTicket from "@/components/AssignTicket";
+import { getServerSession } from "next-auth";
+import options from "@/app/api/auth/[...nextauth]/options";
 
 interface Props {
   ticket: Ticket;
   users: User[];
 }
-const TIcketDetails = ({ ticket, users }: Props) => {
+const TIcketDetails = async ({ ticket, users }: Props) => {
+  const session = await getServerSession(options);
+
   return (
     <div className="lg:grid lg:grid-cols-4">
       <Card className="mx-4 mb-4 lg:col-span-3 lg:mr-4">
@@ -64,7 +68,13 @@ const TIcketDetails = ({ ticket, users }: Props) => {
         >
           Edit Ticket
         </Link>
-        <DeleteButton ticketId={ticket.id} />
+        {session?.user?.role === "ADMIN" ||
+          session?.user?.role === "TECH" ||
+          (session?.user?.role === "USER" && (
+            <>
+              <DeleteButton ticketId={ticket.id} />
+            </>
+          ))}
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ const DeleteButton = ({ ticketId }: Props) => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  
 
   const deleteTicket = async () => {
     try {

@@ -1,7 +1,9 @@
 import prisma from "@/prisma/db";
 import { userSchema } from "@/ValidationSchemas/user";
 import bcrypt from "bcryptjs";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import options from "../../auth/[...nextauth]/options";
 
 interface Props {
   params: {
@@ -10,6 +12,11 @@ interface Props {
 }
 
 export async function PATCH(request: NextRequest, { params }: Props) {
+  const session = await getServerSession(options);
+
+  if (!session) {
+    return NextResponse.json({ error: "Not Authenticated" }, { status: 401 });
+  }
   const body = await request.json();
   const validation = userSchema.safeParse(body);
 
@@ -30,10 +37,9 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   if (body?.password && body.params != "") {
     const hashPassword = await bcrypt.hash(body.password, 10);
     body.password = hashPassword;
-  }else {
-    delete body.password
+  } else {
+    delete body.password;
   }
-  console.log(body)
   if (user.username !== body.username) {
     const duplicate = await prisma.user.findUnique({
       where: {
