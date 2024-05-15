@@ -68,13 +68,7 @@ const TIcketDetails = async ({ ticket, users }: Props) => {
         >
           Edit Ticket
         </Link>
-        {session?.user?.role === "ADMIN" ||
-          session?.user?.role === "TECH" ||
-          (session?.user?.role === "USER" && (
-            <>
-              <DeleteButton ticketId={ticket.id} />
-            </>
-          ))}
+        <DeleteButton ticketId={ticket.id} />
       </div>
     </div>
   );

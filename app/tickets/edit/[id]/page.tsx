@@ -14,11 +14,7 @@ const TicketForm = dynamic(() => import("@/components/TicketForm"), {
 });
 const EditTicket = async ({ params }: Props) => {
   const session = await getServerSession(options);
-  if (
-    session?.user?.role !== "ADMIN" ||
-    session?.user?.role !== "TECH" ||
-    session?.user?.role !== "USER"
-  ) {
+  if (session?.user?.role !== "ADMIN") {
     return <p className="text-destructive">Access denied</p>;
   }
   const ticket = await prisma?.ticket.findUnique({

@@ -10,6 +10,7 @@ const ViewTicket = async ({ params }: Props) => {
   if (!/^\d+$/.test(params.id)) {
     return <p className="text-destructive">Invalid ID!</p>;
   }
+  
   const ticket = await prisma.ticket.findUnique({
     where: {
       id: Number(params.id),

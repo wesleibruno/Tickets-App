@@ -11,11 +11,6 @@ interface Props {
 }
 
 export async function PATCH(request: NextRequest, { params }: Props) {
-  const session = await getServerSession(options);
-
-  if (!session) {
-    return NextResponse.json({ error: "Not Authenticated" }, { status: 401 });
-  }
   const body = await request.json();
   const validation = ticketPatchSchema.safeParse(body);
   if (!validation.success) {
@@ -49,6 +44,18 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Props) {
+  const session = await getServerSession(options);
+
+  if (!session) {
+    return NextResponse.json({ error: "Not Authenticated" }, { status: 401 });
+  }
+  if (
+    session.user.role !== "ADMIN" &&
+    session.user.role !== "USER" &&
+    session.user.role !== "TECH"
+  ) {
+    return NextResponse.json({ error: "Not Authorized" }, { status: 401 });
+  }
   const ticket = await prisma.ticket.findUnique({
     where: {
       id: Number(params.id),
